@@ -134,7 +134,12 @@ public final class ReflectUtils {
         return cls.isPrimitive() || cls == String.class || cls == Boolean.class || cls == Character.class 
                 || Number.class.isAssignableFrom(cls) || Date.class.isAssignableFrom(cls);
     }
-	
+
+	/**
+	 * 获取该参数的基本类型的包装类
+	 * @param c
+	 * @return
+	 */
 	public static Class<?> getBoxedClass(Class<?> c) {
 	    if( c == int.class )
             c = Integer.class;

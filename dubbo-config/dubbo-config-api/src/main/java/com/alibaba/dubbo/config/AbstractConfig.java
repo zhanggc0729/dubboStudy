@@ -96,9 +96,18 @@ public abstract class AbstractConfig implements Serializable {
         return value;
     }
 
+    /**
+     * 增加注解
+     * 解读被注解的 内容，并生成set方法，并执行
+     * 重点 interfaceClass和interfaceName置为interface
+     *      利用包装类
+     * @param annotationClass
+     * @param annotation
+     */
     protected void appendAnnotation(Class<?> annotationClass, Object annotation) {
         Method[] methods = annotationClass.getMethods();
         for (Method method : methods) {
+            //
             if (method.getDeclaringClass() != Object.class
                     && method.getReturnType() != void.class
                     && method.getParameterTypes().length == 0
@@ -110,8 +119,11 @@ public abstract class AbstractConfig implements Serializable {
                         property = "interface";
                     }
                     String setter = "set" + property.substring(0, 1).toUpperCase() + property.substring(1);
+                    //获取注解中设置的值
                     Object value = method.invoke(annotation, new Object[0]);
+                    //判断设置的值是不为空，值不等于默认值
                     if (value != null && ! value.equals(method.getDefaultValue())) {
+                        //获取返回参数的包装类
                         Class<?> parameterType = ReflectUtils.getBoxedClass(method.getReturnType());
                         if ("filter".equals(property) || "listener".equals(property)) {
                             parameterType = String.class;
@@ -121,6 +133,7 @@ public abstract class AbstractConfig implements Serializable {
                             value = CollectionUtils.toStringMap((String[]) value);
                         }
                         try {
+                            //反射生成set方法并执行
                             Method setterMethod = getClass().getMethod(setter, new Class<?>[] { parameterType });
                             setterMethod.invoke(this, new Object[] { value });
                         } catch (NoSuchMethodException e) {
@@ -134,6 +147,10 @@ public abstract class AbstractConfig implements Serializable {
         }
     }
 
+    /**
+     * 增加Properties参数
+     * @param config
+     */
     protected static void appendProperties(AbstractConfig config) {
         if (config == null) {
             return;
@@ -148,6 +165,7 @@ public abstract class AbstractConfig implements Serializable {
                     String property = StringUtils.camelToSplitName(name.substring(3, 4).toLowerCase() + name.substring(4), "-");
 
                     String value = null;
+                    //从系统属性获取指定value
                     if (config.getId() != null && config.getId().length() > 0) {
                         String pn = prefix + config.getId() + "." + property;
                         value = System.getProperty(pn);
@@ -162,6 +180,8 @@ public abstract class AbstractConfig implements Serializable {
                             logger.info("Use System Property " + pn + " to config dubbo");
                         }
                     }
+                    //根据get和is方法获取value
+
                     if (value == null || value.length() == 0) {
                         Method getter;
                         try {
@@ -173,6 +193,7 @@ public abstract class AbstractConfig implements Serializable {
                                 getter = null;
                             }
                         }
+                        //如果都获取不到，就从ConfigUtils中获取
                         if (getter != null) {
                             if (getter.invoke(config, new Object[0]) == null) {
                                 if (config.getId() != null && config.getId().length() > 0) {
@@ -202,6 +223,7 @@ public abstract class AbstractConfig implements Serializable {
     }
     
     private static String getTagName(Class<?> cls) {
+        //返回的源代码中的基础类的简单名称。如果是匿名的基础类，则返回一个空字符串。
         String tag = cls.getSimpleName();
         for (String suffix : SUFFIXS) {
             if (tag.endsWith(suffix)) {

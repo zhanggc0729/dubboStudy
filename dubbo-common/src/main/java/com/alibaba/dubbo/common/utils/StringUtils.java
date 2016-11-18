@@ -112,6 +112,7 @@ public final class StringUtils {
     }
 
     /**
+	 * 如果是java标识符返回true
      * Returns true if s is a legal Java identifier.<p>
      * <a href="http://www.exampledepot.com/egs/java.lang/IsJavaId.html">more info.</a>
      */
@@ -406,7 +407,13 @@ public final class StringUtils {
 		}
 		return buf.toString();
 	}
-	
+
+	/**
+	 * 拆分字符串中的大写字母，在每个大写字母后面加上split
+	 * @param camelName
+	 * @param split
+	 * @return
+	 */
 	public static String camelToSplitName(String camelName, String split) {
 	    if (camelName == null || camelName.length() == 0) {
 	        return camelName;

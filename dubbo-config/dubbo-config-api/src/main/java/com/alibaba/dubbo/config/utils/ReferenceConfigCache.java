@@ -57,16 +57,18 @@ public class ReferenceConfigCache {
     /**
      * Get the cache use specified {@link KeyGenerator}.
      * Create cache if not existed yet.
+     * 如果存在group1/com.alibaba.foo.FooService:1.0.0返回，没有则存入
      */
     public static ReferenceConfigCache getCache(String name, KeyGenerator keyGenerator) {
         ReferenceConfigCache cache = cacheHolder.get(name);
         if(cache != null) {
             return cache;
         }
+        //如果指定键已经不再与某个值相关联，则将它与给定值关联。
         cacheHolder.putIfAbsent(name, new ReferenceConfigCache(name, keyGenerator));
         return cacheHolder.get(name);
     }
-
+//定义一个接口 内容为返回缓存的值
     public static interface KeyGenerator {
         String generateKey(ReferenceConfig<?> referenceConfig);
     }
@@ -75,9 +77,11 @@ public class ReferenceConfigCache {
      * Create the key with the <b>Group</b>, <b>Interface</b> and <b>version</b> attribute of {@link ReferenceConfig}.
      * <p>
      * key example: <code>group1/com.alibaba.foo.FooService:1.0.0</code>.
+     * 返回 group1/com.alibaba.foo.FooService:1.0.0
      */
     public static final KeyGenerator DEFAULT_KEY_GENERATOR = new KeyGenerator() {
         public String generateKey(ReferenceConfig<?> referenceConfig) {
+            //取出注解interface如果没有就取出interfaceClass 没有说interfaceName的值
             String iName = referenceConfig.getInterface();
             if(StringUtils.isBlank(iName)) {
                 Class<?> clazz = referenceConfig.getInterfaceClass();
@@ -86,7 +90,7 @@ public class ReferenceConfigCache {
             if(StringUtils.isBlank(iName)) {
                 throw new IllegalArgumentException("No interface info in ReferenceConfig" + referenceConfig);
             }
-
+            //获取组
             StringBuilder ret = new StringBuilder();
             if(! StringUtils.isBlank(referenceConfig.getGroup())) {
                 ret.append(referenceConfig.getGroup()).append("/");
@@ -95,6 +99,7 @@ public class ReferenceConfigCache {
             if(! StringUtils.isBlank(referenceConfig.getVersion())) {
                 ret.append(":").append(referenceConfig.getVersion());
             }
+            //返回 group/com.zrj.pay.bankcard.api.IDToCardService：version
             return ret.toString();
         }
     };

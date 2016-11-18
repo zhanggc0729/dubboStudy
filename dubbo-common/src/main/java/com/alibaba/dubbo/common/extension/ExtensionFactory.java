@@ -17,7 +17,7 @@ package com.alibaba.dubbo.common.extension;
 
 /**
  * ExtensionFactory
- * 
+ * 扩展工厂
  * @author william.liangf
  * @export
  */
