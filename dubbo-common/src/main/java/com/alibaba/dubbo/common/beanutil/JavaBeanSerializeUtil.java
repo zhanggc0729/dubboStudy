@@ -30,7 +30,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.LogHelper;
 import com.alibaba.dubbo.common.utils.ReflectUtils;
 
-/**
+/** 提供类的序列缓存和反序列化
  * @author <a href="mailto:gang.lvg@taobao.com">kimi</a>
  */
 public final class JavaBeanSerializeUtil {
