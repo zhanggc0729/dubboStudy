@@ -116,6 +116,7 @@ public class JavaBeanSerializeUtilTest {
 
     @Test
     public void testDeserialize_Array() throws Exception {
+        //一位数组
         final int len = 10;
         JavaBeanDescriptor descriptor = new JavaBeanDescriptor(int.class.getName(), JavaBeanDescriptor.TYPE_ARRAY);
         for(int i = 0; i < len; i++) {
@@ -128,7 +129,7 @@ public class JavaBeanSerializeUtilTest {
         for(int i = 0; i < len; i++) {
             Assert.assertEquals(i, Array.get(obj, i));
         }
-
+        //二维数组
         descriptor = new JavaBeanDescriptor(int[].class.getName(), JavaBeanDescriptor.TYPE_ARRAY);
         for(int i = 0; i < len; i++) {
             JavaBeanDescriptor innerItem = new JavaBeanDescriptor(int.class.getName(), JavaBeanDescriptor.TYPE_ARRAY);
@@ -148,7 +149,7 @@ public class JavaBeanSerializeUtilTest {
                 Assert.assertEquals(j, Array.get(innerItem, j));
             }
         }
-
+        // 非原生的类
         descriptor = new JavaBeanDescriptor(BigPerson[].class.getName(), JavaBeanDescriptor.TYPE_ARRAY);
         JavaBeanDescriptor innerDescriptor = new JavaBeanDescriptor(BigPerson.class.getName(), JavaBeanDescriptor.TYPE_ARRAY);
         innerDescriptor.setProperty(0, JavaBeanSerializeUtil.serialize(createBigPerson(), JavaBeanAccessor.METHOD));

@@ -54,11 +54,19 @@ public final class JavaBeanSerializeUtil {
         return result;
     }
 
+    /**
+     *  提供判断class的属性区别处理
+     * @param cl
+     * @return
+     */
     private static JavaBeanDescriptor createDescriptorForSerialize(Class<?> cl) {
         if (cl.isEnum()) {
             return new JavaBeanDescriptor(cl.getName(), JavaBeanDescriptor.TYPE_ENUM);
         } else if (cl.isArray()) {
+            // 数组的元素的类型
             return new JavaBeanDescriptor(cl.getComponentType().getName(), JavaBeanDescriptor.TYPE_ARRAY);
+            //ReflectUtils.isPrimitive 判断是不是基本类型（也就是原生类型）
+            //该方法认为基本类型和String、Boolean、Character、Number、Date为原生类型
         } else if (ReflectUtils.isPrimitive(cl)) {
             return new JavaBeanDescriptor(cl.getName(), JavaBeanDescriptor.TYPE_PRIMITIVE);
         } else if (Class.class.equals(cl)) {
@@ -135,6 +143,7 @@ public final class JavaBeanSerializeUtil {
                         if (value == null) {
                             continue;
                         }
+                        //获取 类中元素的 类描述
                         JavaBeanDescriptor valueDescriptor = createDescriptorIfAbsent(value, accessor, cache);
                         descriptor.setProperty(entry.getKey(), valueDescriptor);
                     } catch (Exception e) {

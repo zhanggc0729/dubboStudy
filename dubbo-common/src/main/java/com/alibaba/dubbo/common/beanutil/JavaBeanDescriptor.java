@@ -163,7 +163,7 @@ public final class JavaBeanDescriptor implements Serializable, Iterable<Map.Entr
         }
         throw new IllegalStateException("The instance is not a class wrapper");
     }
-
+    //设置属性值，并返回以前的值
     public Object setPrimitiveProperty(Object primitiveValue) {
         if (isPrimitiveType()) {
             return setProperty(PRIMITIVE_PROPERTY_VALUE, primitiveValue);

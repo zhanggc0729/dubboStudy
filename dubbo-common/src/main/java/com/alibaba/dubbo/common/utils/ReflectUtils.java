@@ -129,7 +129,12 @@ public final class ReflectUtils {
         }
         return isPrimitive(cls);
     }
-    
+
+	/**
+	 * 该方法认为基本类型和String、Boolean、Character、Number、Date为原生类型
+	 * @param cls
+	 * @return
+	 */
 	public static boolean isPrimitive(Class<?> cls) {
         return cls.isPrimitive() || cls == String.class || cls == Boolean.class || cls == Character.class 
                 || Number.class.isAssignableFrom(cls) || Date.class.isAssignableFrom(cls);
@@ -1015,6 +1020,11 @@ public final class ReflectUtils {
         return properties;
     }
 
+	/**
+	 * 获取getxxx和isxxx的 参数名xxx 和反射的Method 方便取值
+	 * @param cl
+	 * @return
+	 */
     public static Map<String, Method> getBeanPropertyReadMethods(Class cl) {
         Map<String, Method> properties = new HashMap<String, Method>();
         for(; cl != null; cl = cl.getSuperclass()) {
